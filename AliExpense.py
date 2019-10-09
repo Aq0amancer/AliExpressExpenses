@@ -27,14 +27,17 @@ print(number_of_pages)
 price=[]
 purchase_dates=[]
 # First page
-for element in driver.find_elements_by_xpath("//*[@class='amount-num']"):
-    purchase_dates.append(driver.find_element_by_xpath("//*[@class='info-body']").text)
+for index,element in enumerate(driver.find_elements_by_xpath("//*[@class='amount-num']")):
+    second_row = driver.find_elements_by_xpath("//*[@class='second-row']")[index*2]
+    purchase_dates.append(second_row.find_element_by_xpath(".//span[@class='info-body']").text[6:])
     price.append(float(element.text[2:].replace(',','.')))
+    
 time.sleep(1)
 for page in range(number_of_pages-1):
     driver.find_element_by_xpath("//*[@class='ui-pagination-next ui-goto-page']").click()
     time.sleep(1)
-    for element in driver.find_elements_by_xpath("//*[@class='amount-num']"):
+    for index,element in enumerate(driver.find_elements_by_xpath("//*[@class='amount-num']")):
         price.append(float(element.text[2:].replace(',','.')))
-        purchase_dates.append(driver.find_element_by_xpath("//*[@class='info-body']").text)
-print ('You have spent a total of' + sum(price) + ' euros between' + purchase_dates[-1] +' and ' + purchase_dates[0])
+        second_row = driver.find_elements_by_xpath("//*[@class='second-row']")[index*2]
+        purchase_dates.append(second_row.find_element_by_xpath(".//span[@class='info-body']").text[6:])
+print ('You have spent a total of ' + str(sum(price)) + ' euros on ' + str(len(purchase_dates)) +' purchases between ' + purchase_dates[-1] +' and ' + purchase_dates[0])
